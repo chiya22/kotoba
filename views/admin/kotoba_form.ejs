@@ -1,0 +1,36 @@
+<!Doctype html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>ことば</title>
+    <%- include("../common/stylesheets.ejs") %>
+</head>
+
+<body>
+    <%- include('../common/navi.ejs', {}) %>
+    <main role="main" class="container">
+        <form method="POST" action="/admin/kotoba/kanryou">
+            <h3><%= kotoba.kotoba_no %></h3>
+            <div class="form-group">
+                <% if (mode === 'delete') { %>
+                <textarea readonly class="form-control" name="kotoba_value" id="kotoba_value"
+                    rows="3"><%= kotoba.kotoba_value %></textarea>
+                <% }else{ %>
+                <textarea class="form-control" name="kotoba_value" id="kotoba_value" rows="3"
+                    placeholder="ことばを入力してください"><%= kotoba.kotoba_value %></textarea>
+                <% } %>
+            </div>
+            <input type="hidden" id="kotoba_no" name="kotoba_no" value="<%= kotoba.kotoba_no %>" />
+            <input type="hidden" id="mode" name="mode" value="<%= mode %>" />
+            <input type="hidden" id="q" name="q" value="<%= q %>" />
+            <input type="hidden" id="page" name="page" value="<%= page %>" />
+            <input type="submit" class="btn btn-primary" value="実行" />
+            <a class="btn btn-primary" href="/admin?value=<%= q %>&page=<%= page %>" role="button">戻る</a>
+        </form>
+    </main>
+    <%- include("../common/javascripts.ejs") %>
+</body>
+
+</html>

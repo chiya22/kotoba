@@ -1,0 +1,10 @@
+<div class="card mt-3 mb-3">
+    <div class="card-body">
+        <h5 class="card-title"><%= kotoba_no %></h5>
+        <p class="card-text"><%= kotoba_value %></p>
+        <a class="btn btn-outline-primary btn-sm"
+            href="/admin/kotoba/koushin?no=<%= kotoba_no %>&q=<%= value %>&page=<%= pagenation.current %>">更新</a>
+        <a class="btn btn-outline-primary btn-sm"
+            href="/admin/kotoba/sakujyo?no=<%= kotoba_no %>&q=<%= value %>&page=<%= pagenation.current %>">削除</a>
+    </div>
+</div>

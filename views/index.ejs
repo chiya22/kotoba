@@ -1,0 +1,21 @@
+<!Doctype html>
+<html lang="ja">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>ことば</title>
+    <%- include("./common/stylesheets.ejs") %>
+</head>
+
+<body>
+    <%- include('./common/navi.ejs', {}) %>
+    <main role="main" class="container">
+        <div class="mt-5 mb-5">
+            <h1><%= kotoba.kotoba_value %></h1>
+        </div>
+    </main>
+    <%- include("./common/javascripts.ejs") %>
+</body>
+
+</html>
