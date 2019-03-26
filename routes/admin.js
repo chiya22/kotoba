@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const config = require('../config/dbconfig.js');
 const { Client } = require('pg');
+const csrf = require('csrf');
+const tokens = new csrf();
 
 const MAX_ITEMS_PER_PAGE = 2;
 
@@ -51,6 +53,8 @@ router.get('/', (req, res) => {
       .catch((err) => {
         throw err;
       });
+    delete req.session._csrf;
+    res.clearCookie('_csrf');
     res.render('admin/list', {
       value: req.query.value,
       count: result.rows[0].count,
@@ -68,11 +72,16 @@ router.get('/', (req, res) => {
 //page：一覧での表示していたページ数
 //q：一覧での検索文字列
 router.get('/kotoba/touroku', (req, res) => {
-  res.render('admin/kotoba_form', {
-    mode: 'insert',
-    q: req.query.q,
-    page: req.query.page,
-    kotoba: {}
+  tokens.secret((error, secret) => {
+    const token = tokens.create(secret);
+    req.session._csrf = secret;
+    res.cookie('_csrf', token);
+    res.render('admin/kotoba_form', {
+      mode: 'insert',
+      q: req.query.q,
+      page: req.query.page,
+      kotoba: {}
+    });
   });
 });
 
@@ -99,11 +108,19 @@ router.get('/kotoba/koushin', (req, res) => {
       if (result.rowCount === 0) {
         res.redirect('/');
       } else {
-        res.render('admin/kotoba_form', {
-          mode: 'update',
-          q: req.query.q,
-          page: req.query.page,
-          kotoba: result.rows[0]
+        tokens.secret((error, secret) => {
+          if (error) {
+            throw Error('create token error');
+          }
+          const token = tokens.create(secret);
+          req.session._csrf = secret;
+          res.cookie('_csrf', token);
+          res.render('admin/kotoba_form', {
+            mode: 'update',
+            q: req.query.q,
+            page: req.query.page,
+            kotoba: result.rows[0]
+          });
         });
       }
     });
@@ -139,11 +156,16 @@ router.get('/kotoba/sakujyo', (req, res) => {
       if (result.rowCount === 0) {
         res.redirect('/');
       } else {
-        res.render('admin/kotoba_form', {
-          mode: 'delete',
-          q: req.query.q,
-          page: req.query.page,
-          kotoba: result.rows[0]
+        tokens.secret((error, secret) => {
+          const token = tokens.create(secret);
+          req.session._csrf = secret;
+          res.cookie('_csrf', token);
+          res.render('admin/kotoba_form', {
+            mode: 'delete',
+            q: req.query.q,
+            page: req.query.page,
+            kotoba: result.rows[0]
+          });
         });
       }
     });
@@ -158,6 +180,12 @@ router.get('/kotoba/sakujyo', (req, res) => {
 
 //完了
 router.post('/kotoba/kanryou', (req, res) => {
+
+  const secret = req.session._csrf;
+  const token = req.cookies._csrf;
+  if (!tokens.verify(secret, token)) {
+    throw Error('invalid token');
+  }
 
   let query = {};
   if (req.body.mode === 'insert') {
@@ -181,6 +209,9 @@ router.post('/kotoba/kanryou', (req, res) => {
       .catch((err) => {
         throw err;
       });
+    delete req.session._csrf;
+    res.clearCookie('_csrf');
+
     res.redirect('/admin/kotoba/kanryou');
   });
 });
