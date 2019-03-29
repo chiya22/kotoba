@@ -1,6 +1,6 @@
 
-const config = require('../config/dbconfig.js');
-const { Client } = require('pg');
+const config = require("../config/dbconfig.js");
+const { Client } = require("pg");
 const MAX_ITEMS_PER_PAGE = 2;
 
 const findAll = ((query_page, query_value, callback) => {
@@ -14,14 +14,14 @@ const findAll = ((query_page, query_value, callback) => {
   let kotobas = [];
 
   if (query_value) {
-    query_list.text = 'select * from kotoba where kotoba_value like ' % ' || $1 || ' % '  order by kotoba_no limit $2 offset $3';
+    query_list.text = "select * from kotoba where kotoba_value like '%' || $1 || '%'  order by kotoba_no limit $2 offset $3";
     query_list.values = [query_value, MAX_ITEMS_PER_PAGE, offset];
-    query_count.text = 'select count(*) from kotoba where kotoba_value like ' % ' || $1 || ' % '';
+    query_count.text = "select count(*) from kotoba where kotoba_value like '%' || $1 || '%'";
     query_count.values = [query_value];
   } else {
-    query_list.text = 'select * from kotoba order by kotoba_no limit $1 offset $2';
+    query_list.text = "select * from kotoba order by kotoba_no limit $1 offset $2";
     query_list.values = [MAX_ITEMS_PER_PAGE, offset];
-    query_count.text = 'select count(*) from kotoba';
+    query_count.text = "select count(*) from kotoba";
     query_count.values = [];
   }
 
@@ -57,7 +57,7 @@ const findAll = ((query_page, query_value, callback) => {
 
 module.exports = {
   findAll: findAll,
-  create: '',
-  update: '',
-  delete: ''
+  create: "",
+  update: "",
+  delete: ""
 };
