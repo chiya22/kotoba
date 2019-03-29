@@ -1,37 +1,23 @@
-const router = require('express').Router();
-const config = require('../config/dbconfig.js');
-const { Client } = require('pg');
+const router = require("express").Router();
+const kotoba = require("../model/kotoba.js");
 
 function getRandomInt(max) {
   return Math.floor(Math.random() * Math.floor(max));
 }
-router.get('/', (req, res) => {
 
-  const client = new Client(config);
-  client.connect();
+router.get("/", (req, res) => {
 
-  let query = {};
-  let kotoba = {};
-  query.text = 'select * from kotoba';
-
-  client.query(query, (err, result) => {
+  kotoba.findAll(0, null, (err, retObj) => {
+    let obj = {};
     if (err) {
-      console.log('query', err.stack);
       throw err;
     }
-
-    client.end()
-      .catch((err) => {
-        console.log('error during disconnection', err.stack);
-        throw err;
-      });
-
-    if (result.rowCount !== 0) {
-      kotoba = result.rows[getRandomInt(result.rowCount)];
+    // Random表示
+    if (retObj.length !== 0) {
+      obj = retObj.rows[getRandomInt(retObj.rowCount)];
     }
-
-    res.render('index', {
-      kotoba: kotoba
+    res.render("index", {
+      kotoba: obj
     });
   });
 });
