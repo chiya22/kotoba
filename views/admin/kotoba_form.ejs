@@ -11,7 +11,7 @@
 <body>
     <%- include('../common/navi.ejs', {}) %>
     <main role="main" class="container">
-        <form method="POST" action="/admin/kotoba/kanryou">
+        <form method="POST" action="/admin/kotoba/create">
             <h3><%= kotoba.kotoba_no %></h3>
             <div class="form-group">
                 <% if (mode === 'delete') { %>
@@ -22,15 +22,41 @@
                     placeholder="ことばを入力してください"><%= kotoba.kotoba_value %></textarea>
                 <% } %>
             </div>
+            <% if (mode === 'create') { %>
+            <input type="submit" class="btn btn-primary" data-method="POST" data-action="/admin/kotoba/create"
+                value="登録" />
+            <% } %>
+            <% if (mode === 'update') { %>
+            <input type="submit" class="btn btn-primary" data-method="POST" data-action="/admin/kotoba/update"
+                value="更新" />
+            <% } %>
+            <% if (mode === 'delete') { %>
+            <input type="submit" class="btn btn-primary" data-method="POST" data-action="/admin/kotoba/delete"
+                value="削除" />
+            <% } %>
             <input type="hidden" id="kotoba_no" name="kotoba_no" value="<%= kotoba.kotoba_no %>" />
             <input type="hidden" id="mode" name="mode" value="<%= mode %>" />
             <input type="hidden" id="q" name="q" value="<%= q %>" />
             <input type="hidden" id="page" name="page" value="<%= page %>" />
-            <input type="submit" class="btn btn-primary" value="実行" />
             <a class="btn btn-primary" href="/admin?value=<%= q %>&page=<%= page %>" role="button">戻る</a>
         </form>
     </main>
     <%- include("../common/javascripts.ejs") %>
+    <script>
+        const btnSubmit_onclick = function (event) {
+            const $submit = $(this);
+            const $form = $submit.parents("form");
+            $form.attr("method", $submit.data("method"));
+            $form.attr("action", $submit.data("action"));
+            $form.submit();
+            $submit.off().prop("disabled", true);
+            $form.on("submit", false);
+        };
+        const document_onready = function (event) {
+            $("input[type='submit']").on("click", btnSubmit_onclick);
+        };
+        $(document).ready(document_onready);
+    </script>
 </body>
 
 </html>
