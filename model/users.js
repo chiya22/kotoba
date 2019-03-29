@@ -15,6 +15,10 @@ const findAll = ((callback) => {
     if (err) {
       callback(err, null);
     }
+    client.end()
+      .catch((err) => {
+        throw err;
+      });
     callback(null, result);
   });
 });
