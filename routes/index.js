@@ -7,7 +7,7 @@ function getRandomInt(max) {
 
 router.get("/", (req, res) => {
 
-  kotoba.findAll(0, null, (err, retObj) => {
+  kotoba.findAll((err, retObj) => {
     let obj = {};
     if (err) {
       throw err;

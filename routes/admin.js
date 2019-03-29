@@ -1,7 +1,5 @@
 const express = require("express");
 const router = express.Router();
-const config = require("../config/dbconfig.js");
-const { Client } = require("pg");
 const csrf = require("csrf");
 const tokens = new csrf();
 
@@ -12,7 +10,7 @@ const kotoba = require("../model/kotoba.js");
 //page：現在のページ数
 //value：検索文字列
 router.get("/", (req, res) => {
-  kotoba.findAll(req.query.page, req.query.value, (err, retObj) => {
+  kotoba.findAllForList(req.query.page, req.query.value, (err, retObj) => {
     if (err) {
       throw err;
     }
@@ -47,8 +45,6 @@ router.get("/kotoba/touroku", (req, res) => {
 //page：一覧での表示していたページ数
 //q：一覧での検索文字列
 router.get("/kotoba/koushin", (req, res) => {
-  const client = new Client(config);
-  client.connect();
   if (req.query.no) {
     kotoba.find(req.query.no, (err, retObj) => {
       if (err) {
@@ -80,8 +76,6 @@ router.get("/kotoba/koushin", (req, res) => {
 //page：一覧での表示していたページ数
 //q：一覧での検索文字列
 router.get("/kotoba/sakujyo", (req, res) => {
-  const client = new Client(config);
-  client.connect();
   if (req.query.no) {
     kotoba.find(req.query.no, (err, retObj) => {
       if (err) {

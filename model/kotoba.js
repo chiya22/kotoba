@@ -4,7 +4,24 @@ const { Client } = require("pg");
 const MAX_ITEMS_PER_PAGE = 2;
 
 // ■ findAll
-const findAll = ((query_page, query_value, callback) => {
+const findAll = ((callback) => {
+  const client = new Client(config);
+  client.connect();
+
+  let query = {};
+  query.text = "select * from kotoba";
+  query.values = [];
+  //一覧の取得
+  client.query(query, (err, result) => {
+    if (err) {
+      callback(err, null);
+    }
+    callback(null, result);
+  });
+});
+
+// ■ findAllForKList
+const findAllForList = ((query_page, query_value, callback) => {
   const client = new Client(config);
   client.connect();
 
@@ -157,6 +174,7 @@ const remove = ((kotoba_no, callback) => {
 
 module.exports = {
   findAll: findAll,
+  findAllForList: findAllForList,
   find: find,
   create: create,
   update: update,
