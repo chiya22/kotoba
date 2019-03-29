@@ -5,65 +5,22 @@ const { Client } = require('pg');
 const csrf = require('csrf');
 const tokens = new csrf();
 
-const MAX_ITEMS_PER_PAGE = 2;
+const kotoba = require('../model/kotoba.js');
 
 //一覧
 //
 //page：現在のページ数
 //value：検索文字列
 router.get('/', (req, res) => {
-  const client = new Client(config);
-  client.connect();
-
-  let query = {};
-  let kotobas = [];
-  let page = req.query.page ? parseInt(req.query.page) : 1;
-  let offset = (page - 1) * MAX_ITEMS_PER_PAGE;
-
-  if (req.query.value) {
-    query.text = 'select * from kotoba where kotoba_value like ' % ' || $1 || ' % '  order by kotoba_no limit $2 offset $3';
-    query.values = [req.query.value, MAX_ITEMS_PER_PAGE, offset];
-  } else {
-    query.text = 'select * from kotoba order by kotoba_no limit $1 offset $2';
-    query.values = [MAX_ITEMS_PER_PAGE, offset];
-  }
-
-  client.query(query, (err, result) => {
+  kotoba.findAll(req.query.page, req.query.value, (err, retObj) => {
     if (err) {
       throw err;
     }
-    if (result.rowCount !== 0) {
-      kotobas = result.rows;
-    }
-  });
-
-  if (req.query.value) {
-    query.text = 'select count(*) from kotoba where kotoba_value like ' % ' || $1 || ' % '';
-    query.values = [req.query.value];
-  } else {
-    query.text = 'select count(*) from kotoba';
-    query.values = [];
-  }
-
-  client.query(query, (err, result) => {
-    if (err) {
-      throw err;
-    }
-    client.end()
-      .catch((err) => {
-        throw err;
-      });
+    // token削除
     delete req.session._csrf;
     res.clearCookie('_csrf');
-    res.render('admin/list', {
-      value: req.query.value,
-      count: result.rows[0].count,
-      kotobas: kotobas,
-      pagenation: {
-        max: Math.ceil(result.rows[0].count / MAX_ITEMS_PER_PAGE),
-        current: page
-      }
-    });
+    
+    res.render('admin/list', retObj);
   });
 });
 
