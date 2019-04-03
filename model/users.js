@@ -44,7 +44,11 @@ const find = ((users_name, callback) => {
       .catch((err) => {
         throw err;
       });
-    callback(null, result.rows[0]);
+    if (result) {
+      callback(null, result.rows[0]);
+    } else {
+      callback(new Error("invalid no record nothing"), null);
+    }
   });
 });
 
