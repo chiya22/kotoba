@@ -1,31 +1,48 @@
 const express = require("express");
 const router = express.Router();
+var accountcnotrol = require("../lib/security/accountcontrol.js");
 const csrf = require("csrf");
 const tokens = new csrf();
 
 const kotoba = require("../model/kotoba.js");
 
+// ログイン
+router.get("/login", (req, res) => {
+  res.render("./admin/login.ejs", { message: req.flash("message") });
+});
+router.post("/login",accountcnotrol.authenticate());
+
+// ログアウト
+router.post("/logout", (req, res) => {
+  req.logout();
+  res.redirect("/admin/login");
+});
+
 //一覧
 //
 //page：現在のページ数
 //value：検索文字列
-router.get("/", (req, res) => {
-  kotoba.findAllForList(req.query.page, req.query.value, (err, retObj) => {
-    if (err) {
-      throw err;
-    }
-    // token削除
-    delete req.session._csrf;
-    res.clearCookie("_csrf");
-    res.render("admin/list", retObj);
-  });
+router.get("/", accountcnotrol.authorize(), (req, res) => {
+  if (req.isAuthenticated()) {
+    kotoba.findAllForList(req.query.page, req.query.value, (err, retObj) => {
+      if (err) {
+        throw err;
+      }
+      // token削除
+      delete req.session._csrf;
+      res.clearCookie("_csrf");
+      res.render("admin/list", retObj);
+    });
+  } else {
+    res.redirect("/admin/login");
+  }
 });
 
 //一覧より登録画面を開く
 //
 //page：一覧での表示していたページ数
 //q：一覧での検索文字列
-router.get("/kotoba/touroku", (req, res) => {
+router.get("/kotoba/touroku", accountcnotrol.authorize(), (req, res) => {
   tokens.secret((error, secret) => {
     const token = tokens.create(secret);
     req.session._csrf = secret;
@@ -44,7 +61,7 @@ router.get("/kotoba/touroku", (req, res) => {
 //no：更新対象のkotoba_no
 //page：一覧での表示していたページ数
 //q：一覧での検索文字列
-router.get("/kotoba/koushin", (req, res) => {
+router.get("/kotoba/koushin", accountcnotrol.authorize(), (req, res) => {
   if (req.query.no) {
     kotoba.find(req.query.no, (err, retObj) => {
       if (err) {
@@ -75,7 +92,7 @@ router.get("/kotoba/koushin", (req, res) => {
 //no：削除対象のkotoba_no
 //page：一覧での表示していたページ数
 //q：一覧での検索文字列
-router.get("/kotoba/sakujyo", (req, res) => {
+router.get("/kotoba/sakujyo", accountcnotrol.authorize(), (req, res) => {
   if (req.query.no) {
     kotoba.find(req.query.no, (err, retObj) => {
       if (err) {
@@ -102,14 +119,14 @@ router.get("/kotoba/sakujyo", (req, res) => {
 });
 
 // 登録
-router.post("/kotoba/create", (req, res) => {
+router.post("/kotoba/create", accountcnotrol.authorize(), (req, res) => {
   const secret = req.session._csrf;
   const token = req.cookies._csrf;
   if (!tokens.verify(secret, token)) {
     throw Error("invalid token");
   }
   kotoba.create(req.body.kotoba_value, (err, retObj) => {
-    if (err){
+    if (err) {
       throw err;
     }
     delete req.session._csrf;
@@ -119,14 +136,14 @@ router.post("/kotoba/create", (req, res) => {
 });
 
 // 更新
-router.post("/kotoba/update",(req,res) => {
+router.post("/kotoba/update", accountcnotrol.authorize(), (req, res) => {
   const secret = req.session._csrf;
   const token = req.cookies._csrf;
   if (!tokens.verify(secret, token)) {
     throw Error("invalid token");
   }
   kotoba.update(req.body.kotoba_no, req.body.kotoba_value, (err, retObj) => {
-    if (err){
+    if (err) {
       throw err;
     }
     delete req.session._csrf;
@@ -136,14 +153,14 @@ router.post("/kotoba/update",(req,res) => {
 });
 
 // 削除
-router.post("/kotoba/delete", (req,res) => {
+router.post("/kotoba/delete", accountcnotrol.authorize(), (req, res) => {
   const secret = req.session._csrf;
   const token = req.cookies._csrf;
   if (!tokens.verify(secret, token)) {
     throw Error("invalid token");
   }
   kotoba.delete(req.body.kotoba_no, (err, retObj) => {
-    if (err){
+    if (err) {
       throw err;
     }
     delete req.session._csrf;
@@ -153,7 +170,7 @@ router.post("/kotoba/delete", (req,res) => {
 });
 
 // 完了
-router.get("/kotoba/kanryou", (req, res) => {
+router.get("/kotoba/kanryou", accountcnotrol.authorize(), (req, res) => {
   res.render("admin/kotoba_complete", {});
 });
 

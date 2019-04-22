@@ -4,6 +4,8 @@ var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 var session = require("express-session");
+var accountcnotrol = require("./lib/security/accountcontrol");
+var flash = require("connect-flash");
 
 var indexRouter = require("./routes/index");
 var adminRouter = require("./routes/admin");
@@ -13,6 +15,7 @@ var app = express();
 // view engine setup
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
+app.disable("x-powered-by");
 
 app.use(session({
   secret: "kotoba-secret",
@@ -24,6 +27,9 @@ app.use(session({
     secure: false
   }
 }));
+
+app.use(...accountcnotrol.initialize());
+app.use(flash());
 
 app.use(logger("dev"));
 app.use(express.json());
