@@ -13,8 +13,10 @@
                 <a class="nav-link" href="/admin">管理者</a>
             </li>
         </ul>
-        <form method="POST" action="/admin/logout" class="form-inline my-2 my-lg-0">
+        <% if (locals.user){ %>
+            <form method="POST" action="/admin/logout" class="form-inline my-2 my-lg-0">
             <input type="submit" button class="btn btn-light my-2 my-sm-0" value="ログアウト" />
         </form>
+        <% } %>
     </div>
 </nav>
