@@ -11,9 +11,11 @@
 <body>
     <%- include('./common/navi.ejs', {}) %>
     <main role="main" class="container">
+        <% if (kotoba) { %>
         <div class="mt-5 mb-5">
             <h1><%= kotoba.kotoba_value %></h1>
         </div>
+        <% } %>
     </main>
     <%- include("./common/javascripts.ejs") %>
 </body>
