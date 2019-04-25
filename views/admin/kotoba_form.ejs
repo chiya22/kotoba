@@ -9,7 +9,7 @@
 </head>
 
 <body>
-    <%- include('../common/navi.ejs', {}) %>
+    <%- include('../common/navi.ejs', {select:"admin"}) %>
     <main role="main" class="container">
         <form method="POST" action="/admin/kotoba/create">
             <h3><%= kotoba.kotoba_no %></h3>

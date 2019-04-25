@@ -6,15 +6,24 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarCollapse">
         <ul class="navbar-nav mr-auto">
+            <% if (select === "admin") { %>
+            <li class="nav-item">
+                <a class="nav-link" href="/">ホーム</a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="/admin">管理者</a>
+            </li>
+            <% } else { %>
             <li class="nav-item active">
                 <a class="nav-link" href="/">ホーム</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="/admin">管理者</a>
             </li>
+            <% } %>
         </ul>
         <% if (locals.user){ %>
-            <form method="POST" action="/admin/logout" class="form-inline my-2 my-lg-0">
+        <form method="POST" action="/admin/logout" class="form-inline my-2 my-lg-0">
             <input type="submit" button class="btn btn-light my-2 my-sm-0" value="ログアウト" />
         </form>
         <% } %>
