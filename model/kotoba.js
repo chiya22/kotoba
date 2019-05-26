@@ -1,7 +1,7 @@
 
 const config = require("../config/dbconfig.js");
 const { Client } = require("pg");
-const MAX_ITEMS_PER_PAGE = 2;
+const MAX_ITEMS_PER_PAGE = 5;
 
 // ■ findAll
 const findAll = ((callback) => {
