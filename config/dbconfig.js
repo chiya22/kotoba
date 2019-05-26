@@ -2,7 +2,7 @@ module.exports = {
   // user: "postgres",
   // host: "localhost",
   // database: "postgres",
-  // password: "oosaka@06",
+  // password: "",
   // port: 5432
   user: "mdpjsbeumuvynr",
   host: "ec2-23-21-156-171.compute-1.amazonaws.com",
