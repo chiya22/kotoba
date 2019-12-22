@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const kotoba = require("../model/kotoba.js");
+const kotoba = require("../model/kotoba_gcloud.js");
 
 function getRandomInt(max) {
   return Math.floor(Math.random() * Math.floor(max));
@@ -8,17 +8,15 @@ function getRandomInt(max) {
 router.get("/", (req, res) => {
 
   kotoba.findAll((err, retObj) => {
-    let obj = {};
     if (err) {
       throw err;
     }
-    // Random表示
     if (retObj.length !== 0) {
-      obj = retObj.rows[getRandomInt(retObj.rowCount)];
+      const kotoba = retObj[getRandomInt(retObj.length)];
+      res.render("index", {
+        kotoba: kotoba
+      });
     }
-    res.render("index", {
-      kotoba: obj
-    });
   });
 });
 

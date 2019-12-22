@@ -4,7 +4,7 @@ var accountcnotrol = require("../lib/security/accountcontrol.js");
 const csrf = require("csrf");
 const tokens = new csrf();
 
-const kotoba = require("../model/kotoba.js");
+const kotoba = require("../model/kotoba_gcloud.js");
 
 // ログイン
 router.get("/login", (req, res) => {
@@ -78,7 +78,7 @@ router.get("/kotoba/koushin", accountcnotrol.authorize(), (req, res) => {
           mode: "update",
           q: req.query.q,
           page: req.query.page,
-          kotoba: retObj
+          kotoba: retObj[0],
         });
       });
     });
@@ -109,7 +109,7 @@ router.get("/kotoba/sakujyo", accountcnotrol.authorize(), (req, res) => {
           mode: "delete",
           q: req.query.q,
           page: req.query.page,
-          kotoba: retObj
+          kotoba: retObj[0],
         });
       });
     });

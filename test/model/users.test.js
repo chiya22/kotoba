@@ -1,4 +1,4 @@
-const users = require("../../model/users");
+const users = require("../../model/users_gcloud");
 const assert = require("assert");
 
 describe("findAllのテスト", () => {

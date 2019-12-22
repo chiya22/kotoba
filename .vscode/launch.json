@@ -8,7 +8,12 @@
             "type": "node",
             "request": "launch",
             "name": "Launch Program",
-            "program": "${workspaceFolder}\\bin\\www"
+            "program": "${workspaceFolder}\\bin\\www",
+            "env": {
+                "DB_USER": "postgres",
+                "DB_PASS": "Mdoy3681Jitian6581",
+                "DB_NAME": "postgres",
+            }
         },
         {
             "type": "node",

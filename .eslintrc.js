@@ -20,10 +20,10 @@ module.exports = {
             "error",
             2
         ],
-        "quotes": [
-            "error",
-            "double"
-        ],
+        // "quotes": [
+        //     "error",
+        //     "double"
+        // ],
         "semi": [
             "error",
             "always"
